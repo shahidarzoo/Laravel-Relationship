@@ -32,7 +32,7 @@ public function timeTables() {
     }
 ```
 # Render data to view
-```html
+```php
 @php $sn = 1; @endphp
 @foreach($timetables as $timetable)
 <tr>
