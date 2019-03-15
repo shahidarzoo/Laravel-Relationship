@@ -61,22 +61,24 @@ class Level extends Model
 # Render data to view
 ```php
 @php $sn = 1; @endphp
-@foreach($timetables as $timetable)
+@foreach ($profiles as $profile)
 <tr>
-<td>{{$sn++}}</td>
-<td>{{$timetable->description}}</td>
-<td>
-{{$timetable->type}}
-</td>
-<td>{{$timetable->subject->subject_name}}</td>
-@if($timetable->teacher->user->avatar == '')
-<td><img class="img-circle img-xs" src="img/profile-photos/1.png"></td>
-@else
-<td><img class="img-circle img-xs" src="{{$timetable->teacher->user->avatar}}"></td>
-@endif
-<td>{{$timetable->teacher->user->first_name}} {{$timetable->teacher->user->last_name}}</td>
-@if($timetable->date == '0000-00-00')
-<td></td>
+	<td>{{$sn++}}</td>
+	<td>{{ ucfirst($profile->first_name)}}</td>
+	<td>{{ucfirst($profile->last_name)}}</td>
+	<td>{{$profile->user->email}}</td>
+	<td>{{$profile->cnic}}</td>
+	<td>{{$profile->phone_no}}</td>
+	<td>{{$profile->level->level}}</td>
+	<td>{{$profile->limit}}</td>
+	<td>{{date('l jS F Y ', strtotime($profile->created_at))}}</td>
+	<td>
+	<a href="{{ URL::to('dbd-partner/edit/'.$profile->id) }}" class="btn btn-info btn-xs pull-left" style="margin-right: 3px;">Edit</a>
+	<a href="{{ URL::to('dbd-partner/destroy/'.$profile->id) }}" class="btn btn-danger btn-xs">Delete</a>
+
+	</td>
+</tr>
+@endforeach
 @else
 <td>{{date(' F jS, Y ', strtotime($timetable->date))}}</td>
 @endif
