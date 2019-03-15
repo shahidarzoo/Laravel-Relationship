@@ -5,7 +5,7 @@
 
 public function index()
 {
-$profiles = Profile::with(['user', 'level'])->where('is_bd_partner', 'Yes')->get();
+	$profiles = Profile::with(['user', 'level'])->where('is_bd_partner', 'Yes')->get();
 }
 
 ```
