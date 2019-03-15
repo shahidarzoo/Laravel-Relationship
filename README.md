@@ -5,31 +5,58 @@
 
 public function index()
     {
-        $school = auth()->user()->school()->first();
-        $subjects = Subject::select('id','subject_name')->where('school_id',$school->id)->get();
-        $teachers = $school->teachers()->with('user')->get();
-        $timetables = ClassTimeTable::with(['subject','teacher','teacher.user'])->where('school_id',$school->id)->get();
-        return view('schedules.timetables', compact('subjects','timetables','teachers'));
+        $profiles = Profile::with(['user', 'level'])->where('is_bd_partner', 'Yes')->get();
     }
 
 ```
-# Subject Model
+# Profile Model
 ```php
-public function timeTables() {
-        return $this->hasMany(ClassTimeTable::class, 'subject_id');
+class Profile extends Model
+{
+    public function user()
+    {
+    	return $this->belongsTo(User::class, 'user_id');
     }
-```
-# Teacher Model
-```php
-public function timeTables() {
-        return $this->hasMany(ClassTimeTable::class,'teacher_id');
+    public function level()
+    {
+    	return $this->belongsTo(Level::class, 'level_id');
     }
+}
+
 ```
 # User Model
 ```php
- public function teacher() {
-        return $this->hasOne('App\Teacher');
+class User extends Authenticatable
+{
+    use Notifiable;
+    use HasRoles;
+
+    public function setPasswordAttribute($password)
+    {   
+        $this->attributes['password'] = bcrypt($password);
     }
+    public function userName()
+    {   
+        return $this->profile->first_name.' '.$this->profile->last_name;
+    }
+
+    public function profile()
+    {
+        return $this->hasOne(Profile::class, 'id');
+    }
+}
+```
+# Level Model
+```php
+class Level extends Model
+{
+    protected $guarded = [];
+
+    public function profile()
+    {
+    	return $this->hasOne(Profile::class, 'id');
+    }
+}
 ```
 # Render data to view
 ```php
